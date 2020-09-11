@@ -207,7 +207,7 @@ uint8_t Board::findIntention(const Move& move)
 		{
 			if (board_[move.src().x + i][move.src().y + i] != nullptr)
 			{
-				return 254; // trying to jump over a piece with a bishop
+				return 198; // trying to jump over a piece with a bishop
 			}
 		}
 	}
@@ -219,7 +219,7 @@ uint8_t Board::findIntention(const Move& move)
 		{
 			if (board_[move.src().x][move.src().y + i] != nullptr)
 			{
-				return 253; // trying to jump over a piece with a rook (y axis)
+				return 199; // trying to jump over a piece with a rook (y axis)
 			}
 		}
 	}
@@ -229,7 +229,7 @@ uint8_t Board::findIntention(const Move& move)
 		{
 			if (board_[move.src().x + i][move.src().y] != nullptr)
 			{
-				return 253; // trying to jump over a piece with a rook (x axis)
+				return 199; // trying to jump over a piece with a rook (x axis)
 			}
 		}
 	}
