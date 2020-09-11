@@ -104,7 +104,10 @@ void Board::movePiece(const Move& move)
 bool Board::isValidMove(const Move& move)
 {
 	if (move.intention() > 200)
+	{
+		std::cout << "code >200!\n";
 		return false;
+	}
 
 	if (pieceAt(move.src())->isWhite() != whitesTurn_)
 		return false;
@@ -142,17 +145,22 @@ uint8_t Board::findIntention(const Move& move)
 
 	// prevent piece moving if would cause friendly king to be in check
 	{
-		bool causesOwnCheck = false;
 		Board copy = g_board;
-		copy.movePiece(move);
+
+		// execute the move without side effects (count has moved already, count moves, etc)
+		copy.setPiece(move.dest(), pieceHere);
+		copy.setPiece(move.src(), nullptr);
 
 		for (shared_ptr<Piece> p : (pieceHere->isWhite() ? copy.blackPieces_ : copy.whitePieces_))
 		{
+			std::cout << "checking " << p->art() << ", ";
 			if (isValidMove(Move(p->pos(), (pieceHere->isWhite() ? whiteKing : blackKing)->pos())))
 			{
+				std::cout << p->art() << " would put " << (pieceHere->isWhite() ? whiteKing->art() : blackKing->art()) << " in check!\n";
 				return 254;
 			}
 		}
+		std::cout << '\n';
 	}
 
 	// is castling?
