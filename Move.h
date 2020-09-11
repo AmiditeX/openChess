@@ -39,6 +39,7 @@ private:
 	*	Possible invalid moves:
 	*	198 - Tried jumping over a piece with a bishop (or queen)
 	*	199 - Tried jumping over a piece with a rook (or queen, double square initial pawn move)
+	*	254 - Moving this piece causes own check
 	*	255 - Invalid move (to be checked in Board::isValidMove)
 	*/
 };
