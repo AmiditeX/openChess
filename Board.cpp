@@ -1,5 +1,7 @@
 #include "Board.h"
 
+extern Board g_board;
+
 shared_ptr<Piece> Board::pieceAt(const Pos2D& pos) const
 {
 	return board_[pos.x][pos.y];
@@ -101,7 +103,7 @@ void Board::movePiece(const Move& move)
 
 bool Board::isValidMove(const Move& move)
 {
-	if (move.intention() == 255)
+	if (move.intention() > 200)
 		return false;
 
 	if (pieceAt(move.src())->isWhite() != whitesTurn_)
@@ -137,6 +139,21 @@ uint8_t Board::findIntention(const Move& move)
 	// can't move empty squares
 	if (pieceHere == nullptr)
 		return 255;
+
+	// prevent piece moving if would cause friendly king to be in check
+	{
+		bool causesOwnCheck = false;
+		Board copy = g_board;
+		copy.movePiece(move);
+
+		for (shared_ptr<Piece> p : (pieceHere->isWhite() ? copy.blackPieces_ : copy.whitePieces_))
+		{
+			if (isValidMove(Move(p->pos(), (pieceHere->isWhite() ? whiteKing : blackKing)->pos())))
+			{
+				return 254;
+			}
+		}
+	}
 
 	// is castling?
 	if ((pieceHere == whiteKing || pieceHere == blackKing) &&
