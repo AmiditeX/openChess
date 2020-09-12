@@ -98,7 +98,7 @@ void Board::movePiece(const Move& move)
 		setPiece(targetRook->pos(), targetRook);
 	}
 	
-	//whitesTurn_ = !whitesTurn_;
+	whitesTurn_ = !whitesTurn_;
 }
 
 bool Board::isValidMove(const Move& move)
@@ -180,7 +180,7 @@ uint8_t Board::findIntention(const Move& move)
 		copy.setPiece(move.dest(), pieceHere);
 		copy.setPiece(move.src(), nullptr);
 
-		if (copy.check() == (pieceHere->isWhite() ? 1 : 2))
+		if (copy.check() != 0)
 		{
 			std::cout << "check for " << copy.check() << "\n";
 		}
