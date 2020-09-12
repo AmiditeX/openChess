@@ -27,6 +27,8 @@ public:
 
 	bool whitesTurn();
 
+	uint8_t check();
+
 	uint8_t findIntention(const Move& move);
 
 	uint8_t gameOver();

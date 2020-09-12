@@ -134,6 +134,35 @@ template <typename T> int sgn(T val) {
 	return (T(0) < val) - (val < T(0));
 }
 
+/// <summary>
+/// Returns whether or not one of the kings is in check.
+/// </summary>
+/// <returns>0 if no king in check. 1 if white in check. 2 if black in check</returns>
+uint8_t Board::check()
+{
+	for (shared_ptr<Piece> p : blackPieces_)
+	{
+		std::cout << "checking " << p->art() << ", ";
+		if (isValidMove(Move(p->pos(), whiteKing->pos())))
+		{
+			std::cout << p->art() << " would put " << whiteKing->art() << " in check!\n";
+			return 1;
+		}
+	}
+
+	for (shared_ptr<Piece> p : whitePieces_)
+	{
+		std::cout << "checking " << p->art() << ", ";
+		if (isValidMove(Move(p->pos(), blackKing->pos())))
+		{
+			std::cout << p->art() << " would put " << blackKing->art() << " in check!\n";
+			return 2;
+		}
+	}
+
+	return 0;
+}
+
 uint8_t Board::findIntention(const Move& move)
 {
 	Pos2D moveDelta = move.dest() - move.src();
@@ -151,15 +180,11 @@ uint8_t Board::findIntention(const Move& move)
 		copy.setPiece(move.dest(), pieceHere);
 		copy.setPiece(move.src(), nullptr);
 
-		for (shared_ptr<Piece> p : (pieceHere->isWhite() ? copy.blackPieces_ : copy.whitePieces_))
+		if (copy.check() == (pieceHere->isWhite() ? 1 : 2))
 		{
-			std::cout << "checking " << p->art() << ", ";
-			if (isValidMove(Move(p->pos(), (pieceHere->isWhite() ? whiteKing : blackKing)->pos())))
-			{
-				std::cout << p->art() << " would put " << (pieceHere->isWhite() ? whiteKing->art() : blackKing->art()) << " in check!\n";
-				return 254;
-			}
+			std::cout << "check for " << copy.check() << "\n";
 		}
+
 		std::cout << '\n';
 	}
 
